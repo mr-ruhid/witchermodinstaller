@@ -18,9 +18,10 @@ class ModConfig {
   final String description;
   final String logoPath;
   final bool isLanguagePack;
-  final bool isRequiredWithLang; // Dil faylı ilə məcburi yüklənməlidirmi?
-  final int priority; // YENİ: Toqquşmaların qarşısını alan qrup nömrəsi (0: əsas/tərcümə, 1: font, 2: musiqi)
-  final List<ModFileOperation> operations;
+  final bool isRequiredWithLang;
+  final int priority;
+  final bool isBeta;
+  final List<ModFileOperation> operations; // XƏTANI HƏLL EDƏN SƏTİR: Bu sətir əlavə olundu
 
   const ModConfig({
     required this.id,
@@ -30,7 +31,8 @@ class ModConfig {
     required this.logoPath,
     required this.isLanguagePack,
     this.isRequiredWithLang = false,
-    this.priority = 0, // Standart olaraq 0 qəbul edirik
+    this.priority = 0,
+    this.isBeta = false,
     required this.operations,
   });
 }
