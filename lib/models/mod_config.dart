@@ -19,6 +19,7 @@ class ModConfig {
   final String logoPath;
   final bool isLanguagePack;
   final bool isRequiredWithLang; // Dil faylı ilə məcburi yüklənməlidirmi?
+  final int priority; // YENİ: Toqquşmaların qarşısını alan qrup nömrəsi (0: əsas/tərcümə, 1: font, 2: musiqi)
   final List<ModFileOperation> operations;
 
   const ModConfig({
@@ -29,6 +30,7 @@ class ModConfig {
     required this.logoPath,
     required this.isLanguagePack,
     this.isRequiredWithLang = false,
+    this.priority = 0, // Standart olaraq 0 qəbul edirik
     required this.operations,
   });
 }

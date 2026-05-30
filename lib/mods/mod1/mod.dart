@@ -1,33 +1,4 @@
-// Bu sinif modun ekranda necə görünəcəyini və hansı faylları dəyişdirəcəyini təyin edir
-class ModFileOperation {
-  final String sourceAssetPath; // Proqramın içindəki faylın yeri
-  final String targetGamePath;  // Oyun qovluğunda hara kopyalanacağı
-
-  const ModFileOperation({
-    required this.sourceAssetPath,
-    required this.targetGamePath,
-  });
-}
-
-class ModConfig {
-  final String id;
-  final String title;
-  final String author;
-  final String description;
-  final String logoPath;
-  final bool isLanguagePack;
-  final List<ModFileOperation> operations;
-
-  const ModConfig({
-    required this.id,
-    required this.title,
-    required this.author,
-    required this.description,
-    required this.logoPath,
-    required this.isLanguagePack,
-    required this.operations,
-  });
-}
+import '../../models/mod_config.dart';
 
 // ---------------------------------------------------------
 // AZE Dil Paketi (Mod 1) üçün xüsusi məlumatlar
@@ -41,14 +12,13 @@ final ModConfig mod1Config = ModConfig(
   description: 'Oyunu Azərbaycan dilində oynayın və həzz alın',
   logoPath: 'assets/mod/mod1/pp.webp', // Modun loqosu
   isLanguagePack: true, // Dil faylı olduğunu bildirən bayraq
-  operations: [
+  priority: 0,
+  operations: const [
     ModFileOperation(
       // Proqramın içindəki orjinal dil faylının sənin qeyd etdiyin tam yeri
       sourceAssetPath: 'lib/mods/mod1/lang/en.w3strings',
 
       // Oyun qovluğunda dəyişdiriləcək faylın hədəf adı/yolu.
-      // Qeyd: Witcher 3-də dil faylları adətən "content\content0\en.w3strings" kimi yerlərdə olur.
-      // Proqram oyun qovluğunu tapanda bu yolu onun üzərinə əlavə edib faylı dəyişəcək.
       targetGamePath: 'en.w3strings',
     ),
   ],
