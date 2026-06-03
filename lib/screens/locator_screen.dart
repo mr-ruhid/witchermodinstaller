@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'dart:async'; // Əlavə olundu: Ağıllı axtarış və Streamlər üçün
+import 'dart:async';
 import 'package:file_picker/file_picker.dart' as fp;
 
 class GamePaths {
@@ -35,11 +35,7 @@ class _LocatorScreenState extends State<LocatorScreen> {
   bool _isGamePathValid = false;
   bool _isDocsPathValid = false;
 
-  bool _isDeepSearching = false; // Ağıllı axtarışın fırlanma animasiyası üçün
-
-  // Xətaları xüsusi göstərmək üçün dəyişənlər
-  String? _gamePermissionError;
-  String? _docsPermissionError;
+  bool _isDeepSearching = false;
 
   @override
   void initState() {
@@ -47,7 +43,7 @@ class _LocatorScreenState extends State<LocatorScreen> {
     _gamePath = widget.initialGamePath;
     _docsPath = widget.initialDocsPath;
 
-    _autoDetectPaths(); // Pəncərə açılan kimi avtomatik axtarış işə düşür
+    _autoDetectPaths();
   }
 
   // --- 1. AVTOMATİK (SÜRƏTLİ) AXTARIŞ ---
@@ -81,12 +77,10 @@ class _LocatorScreenState extends State<LocatorScreen> {
     _validatePaths();
   }
 
-  // --- 2. YOLLARIN DƏRİN VƏ TƏHLÜKƏSİZLİK (İCAZƏ) YOXLANILMASI ---
+  // --- 2. YOLLARIN DƏRİN YOXLANILMASI (SINAQ YAZMA LƏĞV EDİLDİ) ---
   void _validatePaths() {
     setState(() {
-      // 1. Əsas oyun qovluğunun yoxlanılması
       _isGamePathValid = false;
-      _gamePermissionError = null;
 
       if (_gamePath != null && _gamePath!.isNotEmpty) {
         File exeFile = File('$_gamePath\\bin\\x64\\witcher3.exe');
@@ -98,33 +92,16 @@ class _LocatorScreenState extends State<LocatorScreen> {
         bool hasValidContentDir = content0Dir.existsSync() || contentDir.existsSync() || baseContentDir.existsSync();
 
         if (exeFile.existsSync() && hasValidContentDir) {
-          // --- CRASH QARŞISINI ALAN İCAZƏ YOXLANILMASI ---
-          try {
-            File temp = File('$_gamePath\\mod_installer_permission_test.tmp');
-            temp.writeAsStringSync('test'); // Yaza bilirsə icazə var
-            temp.deleteSync(); // Sınaq faylını silirik
-            _isGamePathValid = true; // Hər şey əladır
-          } catch (e) {
-            _gamePermissionError = 'QOVLUĞA YAZMA İCAZƏSİ YOXDUR!\nCrash-in qarşısı alındı.\nZəhmət olmasa proqramı bağlayın və "Administrator" olaraq işə salın.';
-          }
+          _isGamePathValid = true;
         }
       }
 
-      // 2. Sənədlər (Documents) qovluğunun yoxlanılması
       _isDocsPathValid = false;
-      _docsPermissionError = null;
 
       if (_docsPath != null && _docsPath!.isNotEmpty) {
         Directory docsDir = Directory(_docsPath!);
         if (docsDir.existsSync() && _docsPath!.endsWith('The Witcher 3')) {
-          try {
-            File temp = File('$_docsPath\\mod_installer_permission_test.tmp');
-            temp.writeAsStringSync('test');
-            temp.deleteSync();
-            _isDocsPathValid = true;
-          } catch (e) {
-            _docsPermissionError = 'QOVLUĞA YAZMA İCAZƏSİ YOXDUR!\nProqramı "Administrator" kimi açın.';
-          }
+          _isDocsPathValid = true;
         }
       }
     });
@@ -132,97 +109,107 @@ class _LocatorScreenState extends State<LocatorScreen> {
 
   // --- 3. DƏRİN AXTARIŞ (AĞILLI SKAN - CRASH-PROOF) ---
   Future<void> _deepSearchGamePath() async {
-    String? selectedDir = await fp.FilePicker.platform.getDirectoryPath(
-      dialogTitle: 'Oyunun yerləşdiyi Diski və ya Qovluğu seçin (Məsələn: C:\\)',
-    );
+    try {
+      String? selectedDir = await fp.FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Oyunun yerləşdiyi Diski və ya Qovluğu seçin (Məsələn: C:\\)',
+      );
 
-    if (selectedDir != null) {
-      setState(() => _isDeepSearching = true);
+      if (selectedDir != null) {
+        setState(() => _isDeepSearching = true);
 
-      try {
-        Directory rootDir = Directory(selectedDir);
-        bool found = false;
+        try {
+          Directory rootDir = Directory(selectedDir);
+          bool found = false;
 
-        var completer = Completer<void>();
-        var subscription = rootDir.list(recursive: true, followLinks: false).listen(
-              (entity) {
-            if (!found && entity is File && entity.path.toLowerCase().endsWith('witcher3.exe')) {
-              found = true;
-              Directory mainDir = entity.parent.parent.parent;
-              setState(() {
-                _gamePath = mainDir.path;
-              });
+          var completer = Completer<void>();
+          var subscription = rootDir.list(recursive: true, followLinks: false).listen(
+                (entity) {
+              if (!found && entity is File && entity.path.toLowerCase().endsWith('witcher3.exe')) {
+                found = true;
+                Directory mainDir = entity.parent.parent.parent;
+                setState(() {
+                  _gamePath = mainDir.path;
+                });
+              }
+            },
+            onError: (e) {
+              // Xətaları uduruq
+            },
+            onDone: () {
+              if (!completer.isCompleted) completer.complete();
+            },
+            cancelOnError: false,
+          );
+
+          Timer.periodic(const Duration(milliseconds: 500), (timer) {
+            if (found) {
+              subscription.cancel();
+              if (!completer.isCompleted) completer.complete();
+              timer.cancel();
             }
-          },
-          onError: (e) {
-            // Sistem qovluqlarına girəndə olan xətaları uduruq ki, proqram crash verməsin
-          },
-          onDone: () {
-            if (!completer.isCompleted) completer.complete();
-          },
-          cancelOnError: false,
-        );
+          });
 
-        Timer.periodic(const Duration(milliseconds: 500), (timer) {
+          await completer.future;
+
           if (found) {
-            subscription.cancel();
-            if (!completer.isCompleted) completer.complete();
-            timer.cancel();
+            _validatePaths();
+          } else {
+            _showError('Seçdiyiniz qovluqda oyun tapılmadı!');
           }
-        });
+        } catch (e) {
+          _showError('Axtarış zamanı xəta baş verdi. Daha kiçik qovluq seçin.');
+        } finally {
+          setState(() => _isDeepSearching = false);
+        }
+      }
+    } catch (e) {
+      _showError('Fayl pəncərəsi açılarkən xəta baş verdi.');
+    }
+  }
 
-        await completer.future;
+  // --- MANUAL "OYUN QOVLUĞUNU" SEÇMƏK (CRASH-PROOF) ---
+  Future<void> _pickGamePath() async {
+    try {
+      String? selectedDir = await fp.FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Oyunun əsas qovluğunu seçin (Məsələn: .../common/The Witcher 3)',
+      );
 
-        if (found) {
+      if (selectedDir != null) {
+        File exeCheck = File('$selectedDir\\bin\\x64\\witcher3.exe');
+
+        if (exeCheck.existsSync()) {
+          setState(() {
+            _gamePath = selectedDir;
+          });
           _validatePaths();
         } else {
-          _showError('Seçdiyiniz qovluqda oyun tapılmadı!');
+          _showError('Seçdiyiniz qovluqda oyun tapılmadı! Doğru qovluğu seçdiyinizdən əmin olun.');
         }
-      } catch (e) {
-        _showError('Axtarış zamanı xəta baş verdi. Daha kiçik qovluq seçin.');
-      } finally {
-        setState(() => _isDeepSearching = false);
       }
+    } catch (e) {
+      _showError('Fayl pəncərəsi açılarkən xəta baş verdi.');
     }
   }
 
-  // --- MANUAL "OYUN QOVLUĞUNU" SEÇMƏK (YENİLƏNDİ) ---
-  Future<void> _pickGamePath() async {
-    String? selectedDir = await fp.FilePicker.platform.getDirectoryPath(
-      dialogTitle: 'Oyunun əsas qovluğunu seçin (Məsələn: .../common/The Witcher 3)',
-    );
-
-    if (selectedDir != null) {
-      // İstifadəçi qovluğu seçdikdən sonra həmin qovluğun içində
-      // doğrudan da witcher3.exe-nin olub-olmadığını yoxlayırıq.
-      File exeCheck = File('$selectedDir\\bin\\x64\\witcher3.exe');
-
-      if (exeCheck.existsSync()) {
-        setState(() {
-          _gamePath = selectedDir;
-        });
-        _validatePaths();
-      } else {
-        _showError('Seçdiyiniz qovluqda oyun tapılmadı! Doğru qovluğu seçdiyinizdən əmin olun.');
-      }
-    }
-  }
-
-  // --- SƏNƏDLƏR (DOCS) QOVLUĞUNU SEÇMƏK ---
+  // --- SƏNƏDLƏR (DOCS) QOVLUĞUNU SEÇMƏK (CRASH-PROOF) ---
   Future<void> _pickDocsPath() async {
-    String? result = await fp.FilePicker.platform.getDirectoryPath(
-      dialogTitle: 'Sənədlərinizdəki "The Witcher 3" qovluğunu seçin',
-    );
+    try {
+      String? result = await fp.FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Sənədlərinizdəki "The Witcher 3" qovluğunu seçin',
+      );
 
-    if (result != null) {
-      if (result.endsWith('The Witcher 3') || result.endsWith('The Witcher 3\\')) {
-        setState(() {
-          _docsPath = result;
-        });
-        _validatePaths();
-      } else {
-        _showError('Seçdiyiniz qovluq "The Witcher 3" sənədlər (Documents) qovluğu deyil!');
+      if (result != null) {
+        if (result.endsWith('The Witcher 3') || result.endsWith('The Witcher 3\\')) {
+          setState(() {
+            _docsPath = result;
+          });
+          _validatePaths();
+        } else {
+          _showError('Seçdiyiniz qovluq "The Witcher 3" sənədlər (Documents) qovluğu deyil!');
+        }
       }
+    } catch (e) {
+      _showError('Fayl pəncərəsi açılarkən xəta baş verdi.');
     }
   }
 
@@ -263,7 +250,6 @@ class _LocatorScreenState extends State<LocatorScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // BAŞLIQ
             const Row(
               children: [
                 Icon(Icons.rule_folder_rounded, color: Color(0xFFE5C07B), size: 36),
@@ -289,34 +275,29 @@ class _LocatorScreenState extends State<LocatorScreen> {
             ),
             const SizedBox(height: 30),
 
-            // 1. ƏSAS OYUN QOVLUĞU KARTI
             _buildPathCard(
               title: 'Əsas Oyun Qovluğu (SteamLibrary)',
               description: 'İçində "bin" və "content" qovluqları olan əsas qovluqdur.',
               path: _gamePath,
               isValid: _isGamePathValid,
               isSearching: _isDeepSearching,
-              permissionError: _gamePermissionError,
-              btnText: 'QOVLUQ SEÇ', // DÜYMƏ MƏTNİ DƏYİŞDİRİLDİ
+              btnText: 'QOVLUQ SEÇ',
               onTap: _pickGamePath,
               onSmartSearchTap: _deepSearchGamePath,
             ),
             const SizedBox(height: 20),
 
-            // 2. SƏNƏDLƏR QOVLUĞU KARTI
             _buildPathCard(
               title: 'Sənədlər (Documents) Qovluğu',
               description: 'Modların oyunda aktivləşdirilməsi üçün "mods.settings" faylı buraya yazılacaq.',
               path: _docsPath,
               isValid: _isDocsPathValid,
               isSearching: false,
-              permissionError: _docsPermissionError,
               btnText: 'QOVLUQ SEÇ',
               onTap: _pickDocsPath,
             ),
             const SizedBox(height: 35),
 
-            // DÜYMƏLƏR
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -362,7 +343,6 @@ class _LocatorScreenState extends State<LocatorScreen> {
     );
   }
 
-  // Yenilənmiş Kart dizaynı
   Widget _buildPathCard({
     required String title,
     required String description,
@@ -371,7 +351,6 @@ class _LocatorScreenState extends State<LocatorScreen> {
     required bool isSearching,
     required String btnText,
     required VoidCallback onTap,
-    String? permissionError,
     VoidCallback? onSmartSearchTap,
   }) {
     return Container(
@@ -412,13 +391,13 @@ class _LocatorScreenState extends State<LocatorScreen> {
                   child: Text(
                     isSearching
                         ? 'Qovluqlar dərindən axtarılır, zəhmət olmasa gözləyin...'
-                        : (permissionError != null ? permissionError : (path != null && path.isNotEmpty ? path : 'Yol tapılmadı və ya seçilməyib...')),
+                        : (path != null && path.isNotEmpty ? path : 'Yol tapılmadı və ya seçilməyib...'),
                     style: TextStyle(
                       color: isSearching ? const Color(0xFFE5C07B) : (isValid ? Colors.greenAccent : Colors.redAccent.shade200),
                       fontSize: 12,
                       fontFamily: 'monospace',
                     ),
-                    maxLines: 3,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

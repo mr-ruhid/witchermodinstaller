@@ -47,10 +47,10 @@ class _InstallDialogState extends State<InstallDialog> {
   // --- MÜKƏMMƏL KOPYALAMA VƏ SETTINGS YAZMA MƏNTİQİ ---
   Future<void> _startInstallation() async {
     try {
-      // 1. Aktivlərin (Assets) siyahısını manifestdən oxuyuruq
-      final manifestContent = await rootBundle.loadString('AssetManifest.json');
-      final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-      final List<String> allAssetKeys = manifestMap.keys.toList();
+      // 1. Aktivlərin (Assets) siyahısını manifestdən YENİ METODLA oxuyuruq
+      // JSON XƏTASI BURADA HƏLL OLUNDU!
+      final AssetManifest manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+      final List<String> allAssetKeys = manifest.listAssets();
 
       for (int i = 0; i < widget.selectedMods.length; i++) {
         if (!mounted) return;
