@@ -17,7 +17,7 @@ final ModConfig mod2Config = ModConfig(
   operations: const [
     ModFileOperation(
       // Proqramın içindəki orjinal qovluğun yeri
-      sourceAssetPath: 'lib/mods/mod2/mod/modURW_DinLite',
+      sourceAssetPath: 'assets/mod/mod2/mod/modURW_DinLite',
 
       // Oyun qovluğunda kopyalanacağı hədəf.
       targetGamePath: 'mods/modURW_DinLite',

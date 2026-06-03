@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui'; // Şüşə effekti (BackdropFilter) üçün
 import 'dart:io'; // Fayl əməliyyatları (Cache və Process) üçün
+import 'dart:convert'; // Json əməliyyatları üçün
 import 'package:url_launcher/url_launcher.dart'; // Linkləri açmaq üçün
 import 'package:window_manager/window_manager.dart'; // Pəncərə idarəetməsi üçün
 import 'package:file_picker/file_picker.dart' as fp; // Toqquşmanın qarşısını almaq üçün "fp" ləqəbi
@@ -15,6 +16,10 @@ import '../mods/mod2/mod.dart';
 import '../mods/mod3/mod.dart';
 import '../mods/mod4/mod.dart';
 import '../mods/mod5/mod.dart';
+
+// Digər ekranlar
+import 'locator_screen.dart';
+import 'install_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -100,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
   }
 
-  // --- OYUNU BAŞLATMA VƏ KEŞ MƏNTİQİ ---
+  // --- OYUNU BAŞLATMA MƏNTİQİ ---
   Future<void> _playGame() async {
     setState(() => _isLaunchingGame = true);
 
@@ -167,6 +172,63 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       }
     } finally {
       if (mounted) setState(() => _isLaunchingGame = false);
+    }
+  }
+
+  // --- QURAŞDIRMA MƏNTİQİ (Yeni Əlavə) ---
+  Future<void> _installMods() async {
+    // 1. Seçilmiş modları obyekt olaraq siyahıya alırıq
+    final modsToInstall = availableMods.where((m) => selectedModIds.contains(m.id)).toList();
+    if (modsToInstall.isEmpty) return;
+
+    // 2. Yolları yaddaşdan (cache) oxuyuruq (varsa)
+    final cacheFile = File('game_paths_cache.json');
+    String? cachedGamePath;
+    String? cachedDocsPath;
+
+    if (await cacheFile.exists()) {
+      try {
+        final data = jsonDecode(await cacheFile.readAsString());
+        cachedGamePath = data['gamePath'];
+        cachedDocsPath = data['docsPath'];
+      } catch (e) {
+        debugPrint('Yol kəşi oxunarkən xəta: $e');
+      }
+    }
+
+    // 3. Yolların yoxlanılması üçün Locator Screen Pop-upını açırıq
+    GamePaths? validPaths = await LocatorScreen.show(
+      context,
+      gamePath: cachedGamePath,
+      docsPath: cachedDocsPath,
+    );
+
+    // Əgər istifadəçi imtina etdisə və ya pəncərəni bağladısa əməliyyatı dayandırırıq
+    if (validPaths == null) return;
+
+    // 4. Doğrulanmış yolları gələcək üçün keşdə saxlayırıq
+    try {
+      await cacheFile.writeAsString(jsonEncode({
+        'gamePath': validPaths.mainGamePath,
+        'docsPath': validPaths.documentsPath,
+      }));
+
+      // Bonus: "Oyunu Başlat" düyməsinin ehtiyacı olan faylı da avtomatik yaradırıq ki,
+      // istifadəçi bir də əziyyət çəkib .exe faylını axtarmasın.
+      final playCacheFile = File('game_path_cache.txt');
+      await playCacheFile.writeAsString('${validPaths.mainGamePath}\\bin\\x64\\witcher3.exe');
+    } catch (e) {
+      debugPrint('Keş yazılarkən xəta: $e');
+    }
+
+    // 5. Yüklənmə (Install) Pəncərəsini açırıq!
+    if (mounted) {
+      await InstallDialog.show(context, modsToInstall, validPaths);
+
+      // Yükləmə bitdikdən sonra seçimləri sıfırlayırıq
+      setState(() {
+        selectedModIds.clear();
+      });
     }
   }
 
@@ -326,13 +388,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
               const SizedBox(height: 12),
 
-              // SEÇİLƏNLƏRİ QURAŞDIR MENYUSU
+              // SEÇİLƏNLƏRİ QURAŞDIR MENYUSU (Artıq Install prosesini işə salır)
               _buildMenuButton(
                 title: selectedModIds.isEmpty ? 'MOD SEÇİN' : 'QURAŞDIR (${selectedModIds.length})',
                 icon: Icons.download_rounded,
                 color: selectedModIds.isEmpty ? Colors.white30 : const Color(0xFFE5C07B),
                 isActive: selectedModIds.isNotEmpty,
-                onTap: selectedModIds.isEmpty ? null : () => Navigator.pushNamed(context, '/locator', arguments: selectedModIds.toList()),
+                onTap: selectedModIds.isEmpty ? null : _installMods, // YENİLƏNDİ
               ),
 
               const Spacer(),

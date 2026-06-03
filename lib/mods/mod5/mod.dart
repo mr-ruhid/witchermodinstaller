@@ -18,7 +18,7 @@ final ModConfig mod5Config = ModConfig(
   operations: const [
     ModFileOperation(
       // Proqramın içindəki orjinal qovluğun yeri
-      sourceAssetPath: 'lib/mods/mod5/mod/modRjGeyim',
+      sourceAssetPath: 'assets/mod/mod5/mod/modRjGeyim',
 
       // Oyun qovluğunda kopyalanacağı hədəf.
       targetGamePath: 'mods/modRjGeyim',

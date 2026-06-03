@@ -16,7 +16,7 @@ final ModConfig mod1Config = ModConfig(
   operations: const [
     ModFileOperation(
       // Proqramın içindəki orjinal dil faylının sənin qeyd etdiyin tam yeri
-      sourceAssetPath: 'lib/mods/mod1/lang/en.w3strings',
+      sourceAssetPath: 'assets/mod/mod1/lang/en.w3strings',
 
       // Oyun qovluğunda dəyişdiriləcək faylın hədəf adı/yolu.
       targetGamePath: 'en.w3strings',
