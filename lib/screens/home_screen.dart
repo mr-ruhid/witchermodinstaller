@@ -175,7 +175,64 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
   }
 
-  // --- QURAŞDIRMA MƏNTİQİ (Yeni Əlavə) ---
+  // --- TƏRCÜMƏ PROQRAMINI BAŞLATMA MƏNTİQİ (YENİ ƏLAVƏ) ---
+  Future<void> _launchTranslator() async {
+    try {
+      // Flutter proqramının işlədiyi əsas qovluğu tapırıq
+      String baseDir = File(Platform.resolvedExecutable).parent.path;
+
+      // Build olunmuş (.exe çıxarılmış) versiyada faylların yeri
+      String prodPath = '$baseDir\\data\\flutter_assets\\assets\\tools\\w3string.exe';
+      // Proqramlaşdırma (debug) vaxtı test etmək üçün yer
+      String devPath = '$baseDir\\assets\\tools\\w3string.exe';
+
+      String exePath = '';
+      if (File(prodPath).existsSync()) {
+        exePath = prodPath;
+      } else if (File(devPath).existsSync()) {
+        exePath = devPath;
+      } else if (File('${Directory.current.path}\\assets\\tools\\w3string.exe').existsSync()) {
+        exePath = '${Directory.current.path}\\assets\\tools\\w3string.exe';
+      }
+
+      if (exePath.isNotEmpty && File(exePath).existsSync()) {
+        // DLL fayllarını tapa bilməsi üçün "Working Directory" olaraq exe-nin öz qovluğunu veririk
+        String workingDir = File(exePath).parent.path;
+
+        // Proqramı işə salırıq!
+        await Process.start(exePath, [], workingDirectory: workingDir);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Tərcümə proqramı başladılır...', style: TextStyle(fontWeight: FontWeight.bold)),
+              backgroundColor: Colors.blueAccent,
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Xəta: w3string.exe tapılmadı! Faylların assets/tools/ qovluğunda olduğundan əmin olun.'),
+              backgroundColor: Colors.red.shade900,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Xəta baş verdi: $e'),
+            backgroundColor: Colors.red.shade900,
+          ),
+        );
+      }
+    }
+  }
+
+  // --- QURAŞDIRMA MƏNTİQİ ---
   Future<void> _installMods() async {
     // 1. Seçilmiş modları obyekt olaraq siyahıya alırıq
     final modsToInstall = availableMods.where((m) => selectedModIds.contains(m.id)).toList();
@@ -388,13 +445,22 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
               const SizedBox(height: 12),
 
-              // SEÇİLƏNLƏRİ QURAŞDIR MENYUSU (Artıq Install prosesini işə salır)
+              // SEÇİLƏNLƏRİ QURAŞDIR MENYUSU
               _buildMenuButton(
                 title: selectedModIds.isEmpty ? 'MOD SEÇİN' : 'QURAŞDIR (${selectedModIds.length})',
                 icon: Icons.download_rounded,
                 color: selectedModIds.isEmpty ? Colors.white30 : const Color(0xFFE5C07B),
                 isActive: selectedModIds.isNotEmpty,
-                onTap: selectedModIds.isEmpty ? null : _installMods, // YENİLƏNDİ
+                onTap: selectedModIds.isEmpty ? null : _installMods,
+              ),
+              const SizedBox(height: 12),
+
+              // TƏRCÜMƏ EDİTLƏMƏ MENYUSU (YENİ ƏLAVƏ)
+              _buildMenuButton(
+                title: 'TƏRCÜMƏNİ EDİTLƏ',
+                icon: Icons.g_translate_rounded,
+                color: Colors.blueAccent,
+                onTap: _launchTranslator,
               ),
 
               const Spacer(),

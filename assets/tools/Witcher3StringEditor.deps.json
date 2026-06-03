@@ -1,0 +1,858 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Witcher3StringEditor/1.15.5": {
+        "dependencies": {
+          "CommunityToolkit.Diagnostics": "8.4.2",
+          "CommunityToolkit.Mvvm": "8.4.2",
+          "GTranslate": "2.3.1",
+          "HanumanInstitute.MvvmDialogs.Wpf": "2.1.0",
+          "Microsoft.Extensions.DependencyModel": "10.0.6",
+          "Serilog": "4.3.1",
+          "Serilog.Extensions.Logging": "10.0.0",
+          "Serilog.Sinks.File": "7.0.0",
+          "Serilog.Sinks.Observable": "3.0.0",
+          "Syncfusion.SfGrid.WPF": "33.1.49",
+          "System.Reactive": "6.1.0",
+          "Witcher3StringEditor.Contracts": "1.0.0",
+          "Witcher3StringEditor.Dialogs": "1.0.0",
+          "Witcher3StringEditor.Dictionary": "1.0.0",
+          "Witcher3StringEditor.Locales": "1.0.0",
+          "Witcher3StringEditor.Messaging": "1.0.0",
+          "Witcher3StringEditor.Miscellaneous": "1.0.0",
+          "Witcher3StringEditor.NexusIntegration": "1.0.0",
+          "Witcher3StringEditor.Serializers": "1.0.0",
+          "iNKORE.UI.WPF.Modern": "0.10.1",
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.18362.57"
+        },
+        "runtime": {
+          "Witcher3StringEditor.dll": {}
+        }
+      },
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.18362.57": {
+        "runtime": {
+          "Microsoft.Windows.SDK.NET.dll": {
+            "assemblyVersion": "10.0.18362.38",
+            "fileVersion": "10.0.18362.55"
+          },
+          "WinRT.Runtime.dll": {
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.2.0.48161"
+          }
+        }
+      },
+      "Antelcat.I18N.SourceGenerators/1.1.0": {
+        "runtime": {
+          "lib/netstandard2.0/Antelcat.I18N.Abstractions.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "Antelcat.I18N.WPF/1.1.0": {
+        "dependencies": {
+          "Antelcat.I18N.SourceGenerators": "1.1.0"
+        },
+        "runtime": {
+          "lib/net5.0-windows7.0/Antelcat.I18N.WPF.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "CommandLineParser/2.9.1": {
+        "runtime": {
+          "lib/netstandard2.0/CommandLine.dll": {
+            "assemblyVersion": "2.9.1.0",
+            "fileVersion": "2.9.1.0"
+          }
+        }
+      },
+      "CommunityToolkit.Diagnostics/8.4.2": {
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Diagnostics.dll": {
+            "assemblyVersion": "8.4.0.0",
+            "fileVersion": "8.4.2.1"
+          }
+        }
+      },
+      "CommunityToolkit.Mvvm/8.4.2": {
+        "runtime": {
+          "lib/net8.0-windows10.0.17763/CommunityToolkit.Mvvm.dll": {
+            "assemblyVersion": "8.4.0.0",
+            "fileVersion": "8.4.2.1"
+          }
+        }
+      },
+      "GTranslate/2.3.1": {
+        "runtime": {
+          "lib/net8.0/GTranslate.dll": {
+            "assemblyVersion": "2.3.1.0",
+            "fileVersion": "2.3.1.0"
+          }
+        }
+      },
+      "HanumanInstitute.MvvmDialogs/2.1.0": {
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "8.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/HanumanInstitute.MvvmDialogs.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
+          }
+        }
+      },
+      "HanumanInstitute.MvvmDialogs.Wpf/2.1.0": {
+        "dependencies": {
+          "HanumanInstitute.MvvmDialogs": "2.1.0",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/HanumanInstitute.MvvmDialogs.Wpf.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
+          }
+        }
+      },
+      "iNKORE.UI.WPF/1.2.8": {
+        "runtime": {
+          "lib/net6.0-windows7.0/iNKORE.UI.WPF.dll": {
+            "assemblyVersion": "1.2.8.0",
+            "fileVersion": "1.2.8.0"
+          }
+        }
+      },
+      "iNKORE.UI.WPF.Modern/0.10.1": {
+        "dependencies": {
+          "iNKORE.UI.WPF": "1.2.8"
+        },
+        "runtime": {
+          "lib/net6.0-windows10.0.18362/iNKORE.UI.WPF.Modern.Controls.dll": {
+            "assemblyVersion": "0.10.1.0",
+            "fileVersion": "0.10.1.0"
+          },
+          "lib/net6.0-windows10.0.18362/iNKORE.UI.WPF.Modern.dll": {
+            "assemblyVersion": "0.10.1.0",
+            "fileVersion": "0.10.1.0"
+          }
+        }
+      },
+      "Microsoft.Bcl.AsyncInterfaces/8.0.0": {
+        "runtime": {
+          "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection/10.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.DependencyInjection.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.0": {
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyModel/10.0.6": {
+        "dependencies": {
+          "System.Text.Encodings.Web": "10.0.6",
+          "System.Text.Json": "10.0.6"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.DependencyModel.dll": {
+            "assemblyVersion": "10.0.0.6",
+            "fileVersion": "10.0.626.17701"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging/10.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "10.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Options": "10.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.Logging.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/10.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
+          "System.Diagnostics.DiagnosticSource": "10.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options/10.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Primitives": "10.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.Options.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.Extensions.Primitives/10.0.0": {
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "NReco.Text.AhoCorasickDoubleArrayTrie/1.1.1": {
+        "runtime": {
+          "lib/netstandard2.0/NReco.Text.AhoCorasickDoubleArrayTrie.dll": {
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
+          }
+        }
+      },
+      "Serilog/4.3.1": {
+        "runtime": {
+          "lib/net8.0/Serilog.dll": {
+            "assemblyVersion": "4.3.0.0",
+            "fileVersion": "4.3.0.0"
+          }
+        }
+      },
+      "Serilog.Extensions.Logging/10.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "10.0.0",
+          "Serilog": "4.3.1"
+        },
+        "runtime": {
+          "lib/net8.0/Serilog.Extensions.Logging.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      },
+      "Serilog.Sinks.File/7.0.0": {
+        "dependencies": {
+          "Serilog": "4.3.1"
+        },
+        "runtime": {
+          "lib/net8.0/Serilog.Sinks.File.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.0.0"
+          }
+        }
+      },
+      "Serilog.Sinks.Observable/3.0.0": {
+        "dependencies": {
+          "Serilog": "4.3.1"
+        },
+        "runtime": {
+          "lib/net8.0/Serilog.Sinks.Observable.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.0.0"
+          }
+        }
+      },
+      "Syncfusion.Compression.Net.Core/33.1.49": {
+        "runtime": {
+          "lib/net8.0/Syncfusion.Compression.Portable.dll": {
+            "assemblyVersion": "33.1.49.0",
+            "fileVersion": "33.1.49.0"
+          }
+        }
+      },
+      "Syncfusion.Data.WPF/33.1.49": {
+        "runtime": {
+          "lib/net8.0-windows7.0/Syncfusion.Data.WPF.dll": {
+            "assemblyVersion": "33.1.49.0",
+            "fileVersion": "33.1.49.0"
+          }
+        }
+      },
+      "Syncfusion.Licensing/33.1.49": {
+        "runtime": {
+          "lib/net8.0/Syncfusion.Licensing.dll": {
+            "assemblyVersion": "33.1.49.0",
+            "fileVersion": "33.1.49.0"
+          }
+        }
+      },
+      "Syncfusion.SfGrid.WPF/33.1.49": {
+        "dependencies": {
+          "Syncfusion.Data.WPF": "33.1.49",
+          "Syncfusion.Licensing": "33.1.49",
+          "Syncfusion.Shared.WPF": "33.1.49"
+        },
+        "runtime": {
+          "lib/net8.0-windows7.0/Syncfusion.SfGrid.WPF.dll": {
+            "assemblyVersion": "33.1.49.0",
+            "fileVersion": "33.1.49.0"
+          }
+        }
+      },
+      "Syncfusion.Shared.WPF/33.1.49": {
+        "dependencies": {
+          "Syncfusion.Licensing": "33.1.49"
+        },
+        "runtime": {
+          "lib/net8.0-windows7.0/Syncfusion.Shared.WPF.dll": {
+            "assemblyVersion": "33.1.49.0",
+            "fileVersion": "33.1.49.0"
+          }
+        }
+      },
+      "Syncfusion.XlsIO.Net.Core/33.1.49": {
+        "dependencies": {
+          "Syncfusion.Compression.Net.Core": "33.1.49",
+          "Syncfusion.Licensing": "33.1.49"
+        },
+        "runtime": {
+          "lib/net8.0/Syncfusion.XlsIO.Portable.dll": {
+            "assemblyVersion": "33.1.49.0",
+            "fileVersion": "33.1.49.0"
+          }
+        }
+      },
+      "System.Diagnostics.DiagnosticSource/10.0.0": {
+        "runtime": {
+          "lib/net8.0/System.Diagnostics.DiagnosticSource.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "System.IO.Pipelines/10.0.6": {
+        "runtime": {
+          "lib/net8.0/System.IO.Pipelines.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.626.17701"
+          }
+        }
+      },
+      "System.Linq.AsyncEnumerable/10.0.6": {
+        "runtime": {
+          "lib/net8.0/System.Linq.AsyncEnumerable.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.626.17701"
+          }
+        }
+      },
+      "System.Reactive/6.1.0": {
+        "runtime": {
+          "lib/net6.0/System.Reactive.dll": {
+            "assemblyVersion": "6.1.0.0",
+            "fileVersion": "6.1.0.62682"
+          }
+        }
+      },
+      "System.Text.Encodings.Web/10.0.6": {
+        "runtime": {
+          "lib/net8.0/System.Text.Encodings.Web.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.626.17701"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll": {
+            "rid": "browser",
+            "assetType": "runtime",
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.626.17701"
+          }
+        }
+      },
+      "System.Text.Json/10.0.6": {
+        "dependencies": {
+          "System.IO.Pipelines": "10.0.6",
+          "System.Text.Encodings.Web": "10.0.6"
+        },
+        "runtime": {
+          "lib/net8.0/System.Text.Json.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.626.17701"
+          }
+        }
+      },
+      "ZeroQL/8.0.0": {
+        "runtime": {
+          "lib/net8.0/ZeroQL.Runtime.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.0.0"
+          }
+        }
+      },
+      "ZString/2.6.0": {
+        "runtime": {
+          "lib/net7.0/ZString.dll": {
+            "assemblyVersion": "2.6.0.0",
+            "fileVersion": "2.6.0.0"
+          }
+        }
+      },
+      "Witcher3StringEditor.Contracts/1.0.0": {
+        "dependencies": {
+          "Serilog": "4.3.1"
+        },
+        "runtime": {
+          "Witcher3StringEditor.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Witcher3StringEditor.Dialogs/1.0.0": {
+        "dependencies": {
+          "CommunityToolkit.Diagnostics": "8.4.2",
+          "CommunityToolkit.Mvvm": "8.4.2",
+          "GTranslate": "2.3.1",
+          "HanumanInstitute.MvvmDialogs.Wpf": "2.1.0",
+          "Microsoft.Extensions.DependencyModel": "10.0.6",
+          "Serilog": "4.3.1",
+          "Syncfusion.SfGrid.WPF": "33.1.49",
+          "Witcher3StringEditor.Contracts": "1.0.0",
+          "Witcher3StringEditor.Dictionary": "1.0.0",
+          "Witcher3StringEditor.Locales": "1.0.0",
+          "Witcher3StringEditor.Messaging": "1.0.0",
+          "Witcher3StringEditor.Serializers": "1.0.0",
+          "iNKORE.UI.WPF.Modern": "0.10.1"
+        },
+        "runtime": {
+          "Witcher3StringEditor.Dialogs.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Witcher3StringEditor.Dictionary/1.0.0": {
+        "dependencies": {
+          "CommunityToolkit.Mvvm": "8.4.2",
+          "NReco.Text.AhoCorasickDoubleArrayTrie": "1.1.1",
+          "Serilog": "4.3.1",
+          "Witcher3StringEditor.Locales": "1.0.0",
+          "Witcher3StringEditor.Messaging": "1.0.0",
+          "Witcher3StringEditor.Miscellaneous": "1.0.0"
+        },
+        "runtime": {
+          "Witcher3StringEditor.Dictionary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Witcher3StringEditor.Locales/1.0.0": {
+        "dependencies": {
+          "Antelcat.I18N.WPF": "1.1.0"
+        },
+        "runtime": {
+          "Witcher3StringEditor.Locales.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        },
+        "resources": {
+          "de/Witcher3StringEditor.Locales.resources.dll": {
+            "locale": "de"
+          },
+          "fr/Witcher3StringEditor.Locales.resources.dll": {
+            "locale": "fr"
+          },
+          "hu/Witcher3StringEditor.Locales.resources.dll": {
+            "locale": "hu"
+          },
+          "ja-jp/Witcher3StringEditor.Locales.resources.dll": {
+            "locale": "ja-jp"
+          },
+          "zh-Hans/Witcher3StringEditor.Locales.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "zh-Hant/Witcher3StringEditor.Locales.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Witcher3StringEditor.Messaging/1.0.0": {
+        "dependencies": {
+          "CommunityToolkit.Mvvm": "8.4.2"
+        },
+        "runtime": {
+          "Witcher3StringEditor.Messaging.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Witcher3StringEditor.Miscellaneous/1.0.0": {
+        "runtime": {
+          "Witcher3StringEditor.Miscellaneous.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Witcher3StringEditor.NexusIntegration/1.0.0": {
+        "dependencies": {
+          "ZeroQL": "8.0.0"
+        },
+        "runtime": {
+          "Witcher3StringEditor.NexusIntegration.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Witcher3StringEditor.Serializers/1.0.0": {
+        "dependencies": {
+          "CommandLineParser": "2.9.1",
+          "CommunityToolkit.Diagnostics": "8.4.2",
+          "Serilog": "4.3.1",
+          "Syncfusion.XlsIO.Net.Core": "33.1.49",
+          "System.Linq.AsyncEnumerable": "10.0.6",
+          "Witcher3StringEditor.Contracts": "1.0.0",
+          "ZString": "2.6.0"
+        },
+        "runtime": {
+          "Witcher3StringEditor.Serializers.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Witcher3StringEditor/1.15.5": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.18362.57": {
+      "type": "runtimepack",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Antelcat.I18N.SourceGenerators/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-r0qaaBlVG/IbLj/6i2GKBfvH+rGCuhND6hVJrjgogi9RkyP0LJekz7+MCmYdNkrOjumjioYrOLxMh2E98NvzFg==",
+      "path": "antelcat.i18n.sourcegenerators/1.1.0",
+      "hashPath": "antelcat.i18n.sourcegenerators.1.1.0.nupkg.sha512"
+    },
+    "Antelcat.I18N.WPF/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-w8RhLwkeaHZe0F5SQZ7N5cwjvdDFN+lyf27I7AmwasSBwW50rNAkB1out+/0n6i8uWbNhKEN45Rp5Dtc2r9pgg==",
+      "path": "antelcat.i18n.wpf/1.1.0",
+      "hashPath": "antelcat.i18n.wpf.1.1.0.nupkg.sha512"
+    },
+    "CommandLineParser/2.9.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OE0sl1/sQ37bjVsPKKtwQlWDgqaxWgtme3xZz7JssWUzg5JpMIyHgCTY9MVMxOg48fJ1AgGT3tgdH5m/kQ5xhA==",
+      "path": "commandlineparser/2.9.1",
+      "hashPath": "commandlineparser.2.9.1.nupkg.sha512"
+    },
+    "CommunityToolkit.Diagnostics/8.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WC0fk3A49gk6kWjhSZ8CDgPkv+wPHGhMFxUrKRlLtzUYXRFOdTDQ4RsEkZnI9ApO7eJh6nqT2MFmwFptpMs7aw==",
+      "path": "communitytoolkit.diagnostics/8.4.2",
+      "hashPath": "communitytoolkit.diagnostics.8.4.2.nupkg.sha512"
+    },
+    "CommunityToolkit.Mvvm/8.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WadCzGEc2U+3e20avRLng4qNtt4zoOGWrdUISqJWrHe3/FSnrYjuM5Sb4yQb09LhkBXrrI4Zt3dLKgRMbItsrg==",
+      "path": "communitytoolkit.mvvm/8.4.2",
+      "hashPath": "communitytoolkit.mvvm.8.4.2.nupkg.sha512"
+    },
+    "GTranslate/2.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bHT6UbYjVWCmhNyxt73NEyJtE1tDl9OMrIGIMypn3DPD7S7pjUVbS1TyZF6N8V2qtn9mSlaiu+6XbecIvjQZ8w==",
+      "path": "gtranslate/2.3.1",
+      "hashPath": "gtranslate.2.3.1.nupkg.sha512"
+    },
+    "HanumanInstitute.MvvmDialogs/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YDgorKQDwEU9pWEyfrGOwAfCUApGXV99GvfmuPltjfBVZUQKfysheP/1rOraMfW46HWE0UytxrFdutH12NXurQ==",
+      "path": "hanumaninstitute.mvvmdialogs/2.1.0",
+      "hashPath": "hanumaninstitute.mvvmdialogs.2.1.0.nupkg.sha512"
+    },
+    "HanumanInstitute.MvvmDialogs.Wpf/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DDvgCGJd7tV5W0rEp0BfOhxE23zR9yKpTjknjz+JsC/uu5D3xpSYsHv6rlBbEZPXZ5ySUNmIpHx6M6IZ7CLWiw==",
+      "path": "hanumaninstitute.mvvmdialogs.wpf/2.1.0",
+      "hashPath": "hanumaninstitute.mvvmdialogs.wpf.2.1.0.nupkg.sha512"
+    },
+    "iNKORE.UI.WPF/1.2.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7b+z25JFdhGAfyJqlVIF0vLbmgsRvqDZMvhGPTz20gzQigDPMqVUOoCCKB5824GtYsjFCYNilmaowb+4yWATkQ==",
+      "path": "inkore.ui.wpf/1.2.8",
+      "hashPath": "inkore.ui.wpf.1.2.8.nupkg.sha512"
+    },
+    "iNKORE.UI.WPF.Modern/0.10.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nRYmBosiL+42eUpLbHeqP7qJqtp5EpzuIMZTpvq4mFV33VB/JjkFg1y82gk50pjkXlAQWDvRyrfSAmPR5AM+3g==",
+      "path": "inkore.ui.wpf.modern/0.10.1",
+      "hashPath": "inkore.ui.wpf.modern.0.10.1.nupkg.sha512"
+    },
+    "Microsoft.Bcl.AsyncInterfaces/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3WA9q9yVqJp222P3x1wYIGDAkpjAku0TMUaaQV22g6L67AI0LdOIrVS7Ht2vJfLHGSPVuqN94vIr15qn+HEkHw==",
+      "path": "microsoft.bcl.asyncinterfaces/8.0.0",
+      "hashPath": "microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-f0RBabswJq+gRu5a+hWIobrLWiUYPKMhCD9WO3sYBAdSy3FFH14LMvLVFZc2kPSCimBLxSuitUhsd6tb0TAY6A==",
+      "path": "microsoft.extensions.dependencyinjection/10.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-L3AdmZ1WOK4XXT5YFPEwyt0ep6l8lGIPs7F5OOBZc77Zqeo01Of7XXICy47628sdVl0v/owxYJTe86DTgFwKCA==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/10.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyModel/10.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xHMiq0J/wbyKDQ/tHB1FxylNWZLLlSf61Fw8XRneG6KTovjabNJiWtQoJ1MKCk71Bjr1TG1wAPVe8QZYphihLQ==",
+      "path": "microsoft.extensions.dependencymodel/10.0.6",
+      "hashPath": "microsoft.extensions.dependencymodel.10.0.6.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BStFkd5CcnEtarlcgYDBcFzGYCuuNMzPs02wN3WBsOFoYIEmYoUdAiU+au6opzoqfTYJsMTW00AeqDdnXH2CvA==",
+      "path": "microsoft.extensions.logging/10.0.0",
+      "hashPath": "microsoft.extensions.logging.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FU/IfjDfwaMuKr414SSQNTIti/69bHEMb+QKrskRb26oVqpx3lNFXMjs/RC9ZUuhBhcwDM2BwOgoMw+PZ+beqQ==",
+      "path": "microsoft.extensions.logging.abstractions/10.0.0",
+      "hashPath": "microsoft.extensions.logging.abstractions.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8oCAgXOow5XDrY9HaXX1QmH3ORsyZO/ANVHBlhLyCeWTH5Sg4UuqZeOTWJi6484M+LqSx0RqQXDJtdYy2BNiLQ==",
+      "path": "microsoft.extensions.options/10.0.0",
+      "hashPath": "microsoft.extensions.options.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Primitives/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-inRnbpCS0nwO/RuoZIAqxQUuyjaknOOnCEZB55KSMMjRhl0RQDttSmLSGsUJN3RQ3ocf5NDLFd2mOQViHqMK5w==",
+      "path": "microsoft.extensions.primitives/10.0.0",
+      "hashPath": "microsoft.extensions.primitives.10.0.0.nupkg.sha512"
+    },
+    "NReco.Text.AhoCorasickDoubleArrayTrie/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-D/iVIymEJl5vDdN/POqAan1zcJNrXMV5RwJ5vjTRAhFeFanUF/MTlBTOH3d+j6B/E/YYKIauq5UWu6nY0+o14g==",
+      "path": "nreco.text.ahocorasickdoublearraytrie/1.1.1",
+      "hashPath": "nreco.text.ahocorasickdoublearraytrie.1.1.1.nupkg.sha512"
+    },
+    "Serilog/4.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-savYe7h5yRlkqBVOwP8cIRDOdqKiPmYCU4W87JH38sBmcKD5EBoXvQIw6bNEvZ/pTe1gsiye3VFCzBsoppGkXQ==",
+      "path": "serilog/4.3.1",
+      "hashPath": "serilog.4.3.1.nupkg.sha512"
+    },
+    "Serilog.Extensions.Logging/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vx0kABKl2dWbBhhqAfTOk53/i8aV/5VaT3a6il9gn72Wqs2pM7EK2OB6No6xdqK2IaY6Zf9gdjLuK9BVa2rT+Q==",
+      "path": "serilog.extensions.logging/10.0.0",
+      "hashPath": "serilog.extensions.logging.10.0.0.nupkg.sha512"
+    },
+    "Serilog.Sinks.File/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fKL7mXv7qaiNBUC71ssvn/dU0k9t0o45+qm2XgKAlSt19xF+ijjxyA3R6HmCgfKEKwfcfkwWjayuQtRueZFkYw==",
+      "path": "serilog.sinks.file/7.0.0",
+      "hashPath": "serilog.sinks.file.7.0.0.nupkg.sha512"
+    },
+    "Serilog.Sinks.Observable/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TEoHgPjwICCbn3zFndpEV7FDne5G5+y3MSHQQxw71aBZ77ptLym60bG3W4owAPMcgMHzlK/npyriLV98qPRvHg==",
+      "path": "serilog.sinks.observable/3.0.0",
+      "hashPath": "serilog.sinks.observable.3.0.0.nupkg.sha512"
+    },
+    "Syncfusion.Compression.Net.Core/33.1.49": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fT5MH1Ne02jG9x7PIXZhoQ960Hv7vyepXYM3jEcAAF3BdCkuURtUjxUcwpgmYVAWTu6m6haoIE5kX+IWwYVJAg==",
+      "path": "syncfusion.compression.net.core/33.1.49",
+      "hashPath": "syncfusion.compression.net.core.33.1.49.nupkg.sha512"
+    },
+    "Syncfusion.Data.WPF/33.1.49": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ck0NS0ktXePVWGGDCAyVmLt2rHJQG2uSA/nLCi4Z5cdVTsAi2A0HQmmkMBkZjTieKIHi1lWgOU5SObBG/+QMKQ==",
+      "path": "syncfusion.data.wpf/33.1.49",
+      "hashPath": "syncfusion.data.wpf.33.1.49.nupkg.sha512"
+    },
+    "Syncfusion.Licensing/33.1.49": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FTivq30PpZnRBrx4+8F43afSxHPINLtZrVZsCMci5COdXOf1kX4VzTDKHd0lCyFSqCdT6qODPm7NWCe2/PvCGg==",
+      "path": "syncfusion.licensing/33.1.49",
+      "hashPath": "syncfusion.licensing.33.1.49.nupkg.sha512"
+    },
+    "Syncfusion.SfGrid.WPF/33.1.49": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-aCahSiEJGEFm+ZTQXs/jEerov7HiTvgwHUTWjlfHd0goyHDE8yK4gguTqCgX38BSsAiqCsNS8e+Rmf6eb3lNIg==",
+      "path": "syncfusion.sfgrid.wpf/33.1.49",
+      "hashPath": "syncfusion.sfgrid.wpf.33.1.49.nupkg.sha512"
+    },
+    "Syncfusion.Shared.WPF/33.1.49": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MR5w233d0vIR39Xb0FcqMd4idzCR0jIUQ12xPUOC0SP4eXxKyX0Inl4AvE4z7BR8kw0wEPRYpoiJm/3Myb/4Fg==",
+      "path": "syncfusion.shared.wpf/33.1.49",
+      "hashPath": "syncfusion.shared.wpf.33.1.49.nupkg.sha512"
+    },
+    "Syncfusion.XlsIO.Net.Core/33.1.49": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Kixj6yok5cmzBgWfCmedsO3xqFGGt4DhpsiTfWbLOcYCZ4J1q/ZyNSZThFXultViT9a5HfXmVIEble3N7aGGJA==",
+      "path": "syncfusion.xlsio.net.core/33.1.49",
+      "hashPath": "syncfusion.xlsio.net.core.33.1.49.nupkg.sha512"
+    },
+    "System.Diagnostics.DiagnosticSource/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0KdBK+h7G13PuOSC2R/DalAoFMvdYMznvGRuICtkdcUMXgl/gYXsG6z4yUvTxHSMACorWgHCU1Faq0KUHU6yAQ==",
+      "path": "system.diagnostics.diagnosticsource/10.0.0",
+      "hashPath": "system.diagnostics.diagnosticsource.10.0.0.nupkg.sha512"
+    },
+    "System.IO.Pipelines/10.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-98dV8iAMdOzlB7iZ8OOJ3Wj/LNMV+x2c0DCM4EyFEz/kEVmB1+49HwnocY703amF2BguoZZXk4t3lPSfbcHOgA==",
+      "path": "system.io.pipelines/10.0.6",
+      "hashPath": "system.io.pipelines.10.0.6.nupkg.sha512"
+    },
+    "System.Linq.AsyncEnumerable/10.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1Ttf7dyLoKXks2bVBVULmDPOSjxaMEE3JRTe/KGEJl3rfepCc4ipUEGMIKa/iBKLSN8rjEedF8Qv3UCtiwaDBw==",
+      "path": "system.linq.asyncenumerable/10.0.6",
+      "hashPath": "system.linq.asyncenumerable.10.0.6.nupkg.sha512"
+    },
+    "System.Reactive/6.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-M5cCC1ZMkZr9jbSQGTHnVkb5TDN67qWCV7AP8TAHdGkvDlu0puT5NzemESNn9+HkYIDpWpocP68/i+/ame2/2w==",
+      "path": "system.reactive/6.1.0",
+      "hashPath": "system.reactive.6.1.0.nupkg.sha512"
+    },
+    "System.Text.Encodings.Web/10.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-o7zWD39jHesxpHyMSWAf+CjM+NaEIV49IJ8tasAsnaVkRcLP33+5aobgxeKLJRLQQfeciO7BbW5vXCUMzPoU6w==",
+      "path": "system.text.encodings.web/10.0.6",
+      "hashPath": "system.text.encodings.web.10.0.6.nupkg.sha512"
+    },
+    "System.Text.Json/10.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eU/JSsGWpQPE+rkBJjFjsmtaPsu1kCLqFYeW3NS715+z/dP2/BsCl6R7BFGcjhg+rm5WHblllC3p7QS+sS3HtA==",
+      "path": "system.text.json/10.0.6",
+      "hashPath": "system.text.json.10.0.6.nupkg.sha512"
+    },
+    "ZeroQL/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Q20YAhHH3SSMqeCh8RYBsMZ1sbfY695UWuIEkLrUFtruKGBB/3j25w6yraSH5uLVoTtpXwe70ADzYvu9LDl4mA==",
+      "path": "zeroql/8.0.0",
+      "hashPath": "zeroql.8.0.0.nupkg.sha512"
+    },
+    "ZString/2.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XE8a+11nZg0LRaf+RGABEWaHIf8yGd5w8v/Ra1iWxMBmAVzwuKbW7G21mS0U7w7sh1lYcgckInWGgnz4qyET8A==",
+      "path": "zstring/2.6.0",
+      "hashPath": "zstring.2.6.0.nupkg.sha512"
+    },
+    "Witcher3StringEditor.Contracts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Witcher3StringEditor.Dialogs/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Witcher3StringEditor.Dictionary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Witcher3StringEditor.Locales/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Witcher3StringEditor.Messaging/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Witcher3StringEditor.Miscellaneous/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Witcher3StringEditor.NexusIntegration/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Witcher3StringEditor.Serializers/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

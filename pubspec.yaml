@@ -69,11 +69,13 @@ flutter:
      - assets/mod/mod3/
      - assets/mod/mod4/
      - assets/mod/mod5/
-     - assets/mod/mod1/lang/
-     - assets/mod/mod2/mod/modURW_DinLite/
-     - assets/mod/mod3/mod/modRjMusic/
-     - assets/mod/mod4/mod/modRj2Music/
-     - assets/mod/mod5/mod/modRjGeyim/
+     - assets/mod/mod1/lang/en.w3strings
+     - assets/mod/mod2/mod/modURW_DinLite.zip
+     - assets/mod/mod3/mod/modRjMusic.zip
+     - assets/mod/mod4/mod/modRj2Music.zip
+     - assets/mod/mod5/mod/modRjGeyim.zip
+     - assets/tools/
+     - assets/tools/w3string.exe
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

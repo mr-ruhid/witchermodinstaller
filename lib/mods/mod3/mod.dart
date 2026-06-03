@@ -17,10 +17,10 @@ final ModConfig mod3Config = ModConfig(
   operations: const [
     ModFileOperation(
       // Proqramın içindəki orjinal qovluğun yeri
-      sourceAssetPath: 'assets/mod/mod3/mod/modRjMusic',
+      sourceAssetPath: 'assets/mod/mod3/mod/modRjMusic.zip',
 
       // Oyun qovluğunda kopyalanacağı hədəf.
-      targetGamePath: 'mods/modRjMusic',
+      targetGamePath: 'mods',
       isDirectory: true, // Bunun bütöv bir qovluq olduğunu proqrama bildiririk
     ),
   ],

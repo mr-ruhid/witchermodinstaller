@@ -4,7 +4,10 @@ import 'dart:async';
 import 'dart:ui';
 import 'dart:io';
 import 'dart:convert';
-import 'dart:typed_data'; // ByteData və Uint8List üçün mütləq lazımdır!
+import 'dart:typed_data';
+
+// ZIP fayllarını çıxarmaq üçün əlavə etdiyimiz paket
+import 'package:archive/archive.dart';
 
 // Modellər və locator məlumatları
 import '../models/mod_config.dart';
@@ -16,11 +19,10 @@ class InstallDialog extends StatefulWidget {
 
   const InstallDialog({super.key, required this.selectedMods, required this.paths});
 
-  // Bu pop-up-ı ekrana çağırmaq üçün xüsusi funksiya
   static Future<void> show(BuildContext context, List<ModConfig> mods, GamePaths paths) {
     return showDialog(
       context: context,
-      barrierDismissible: false, // Kopyalama vaxtı kənara basıb bağlamaq olmaz
+      barrierDismissible: false,
       builder: (context) => InstallDialog(selectedMods: mods, paths: paths),
     );
   }
@@ -34,7 +36,6 @@ class _InstallDialogState extends State<InstallDialog> {
   double _progress = 0.0;
   bool _isFinished = false;
 
-  // Təhlükəsizlik xətaları və crash qarşılayıcı
   bool _hasError = false;
   String _errorMessage = '';
 
@@ -44,14 +45,8 @@ class _InstallDialogState extends State<InstallDialog> {
     _startInstallation();
   }
 
-  // --- MÜKƏMMƏL KOPYALAMA VƏ SETTINGS YAZMA MƏNTİQİ ---
   Future<void> _startInstallation() async {
     try {
-      // 1. Aktivlərin (Assets) siyahısını manifestdən YENİ METODLA oxuyuruq
-      // JSON XƏTASI BURADA HƏLL OLUNDU!
-      final AssetManifest manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
-      final List<String> allAssetKeys = manifest.listAssets();
-
       for (int i = 0; i < widget.selectedMods.length; i++) {
         if (!mounted) return;
 
@@ -62,52 +57,49 @@ class _InstallDialogState extends State<InstallDialog> {
 
         ModConfig currentMod = widget.selectedMods[i];
 
-        // --- ARXA PLANDA HƏQİQİ KOPYALAMA PROSESİ ---
         for (var op in currentMod.operations) {
-          if (op.isDirectory) {
-            // Virtual qovluq kopyalaması (Sənin axtardığın əsl mod qovluq kopyalaması):
-            // Aktivlər içindən bu qovluğa aid olan bütün alt faylları süzürük
-            final String dirAssetPath = op.sourceAssetPath;
-            final matchedAssets = allAssetKeys.where((key) =>
-            key == dirAssetPath ||
-                key.startsWith('$dirAssetPath/') ||
-                key.startsWith('packages/') && key.contains('/$dirAssetPath/')
-            ).toList();
 
-            for (var assetKey in matchedAssets) {
-              // Virtual yoldan nisbi yolu hesablayırıq
-              int index = assetKey.indexOf(dirAssetPath);
-              if (index == -1) continue;
+          // ƏGƏR FAYL ZİP-DİRSƏ (MOD QOVLUQLARI ÜÇÜN YENİ SİSTEM)
+          if (op.sourceAssetPath.toLowerCase().endsWith('.zip')) {
 
-              String relativePart = assetKey.substring(index + dirAssetPath.length);
-              if (relativePart.startsWith('/')) {
-                relativePart = relativePart.substring(1);
+            // 1. Zip faylını yaddaşa yükləyirik
+            ByteData data = await rootBundle.load(op.sourceAssetPath);
+            List<int> bytes = data.buffer.asUint8List();
+
+            // 2. Zip-i açırıq
+            Archive archive = ZipDecoder().decodeBytes(bytes);
+
+            // 3. Zip-in içindəki hər bir faylı/qovluğu tək-tək yerinə yazırıq
+            for (ArchiveFile file in archive) {
+              // DÜZƏLİŞ: file.name sonu '/' ilə bitirsə, bu qovluqdur! Onu fayl kimi yazmağa çalışmırıq.
+              if (file.isFile && !file.name.endsWith('/')) {
+                // file.name bizə "modURW_DinLite/content/blob.bundle" kimi gəlir.
+                String relativePath = file.name;
+
+                // Hədəf yolu (Məsələn: C:/.../The Witcher 3/mods/modURW_DinLite/content/blob.bundle)
+                String fullTargetPath = '${widget.paths.mainGamePath}/${op.targetGamePath}/$relativePath';
+                fullTargetPath = fullTargetPath.replaceAll('/', Platform.pathSeparator).replaceAll('\\', Platform.pathSeparator);
+
+                // Faylın yerləşəcəyi alt qovluqları yaradırıq
+                await Directory(File(fullTargetPath).parent.path).create(recursive: true);
+
+                // Faylı çıxarıb yazırıq
+                await File(fullTargetPath).writeAsBytes(file.content as List<int>, flush: true);
               }
-
-              // Hədəf yolunu yaradırıq (məs: mods/modURW_DinLite/content/blob.bundle)
-              String fullTargetPath = '${widget.paths.mainGamePath}/${op.targetGamePath}/$relativePart';
-              fullTargetPath = fullTargetPath.replaceAll('/', Platform.pathSeparator).replaceAll('\\', Platform.pathSeparator);
-
-              // Faylın yerləşəcəyi qovluğu yaradırıq
-              await Directory(File(fullTargetPath).parent.path).create(recursive: true);
-
-              // Kopyalayırıq
-              ByteData data = await rootBundle.load(assetKey);
-              List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-              await File(fullTargetPath).writeAsBytes(bytes, flush: true);
             }
-          } else {
-            // Tək fayl (Məs: Dil paketi en.w3strings) kopyalaması:
+
+          }
+          // ƏGƏR TƏK FAYLDIRSA (DİL PAKETİ ÜÇÜN KÖHNƏ SİSTEM)
+          else {
             String fullTargetPath;
             if (currentMod.isLanguagePack) {
-              // Dil faylını sənin qeyd etdiyin o 3 fərqli content qovluğundan hansı mövcuddursa, ora atırıq
               String contentDirName = 'content0';
               if (Directory('${widget.paths.mainGamePath}/content/content0').existsSync()) {
                 contentDirName = 'content0';
               } else if (Directory('${widget.paths.mainGamePath}/content/content').existsSync()) {
                 contentDirName = 'content';
               } else if (Directory('${widget.paths.mainGamePath}/content').existsSync()) {
-                contentDirName = ''; // Birbaşa content qovluğunun altına
+                contentDirName = '';
               }
 
               String subPath = contentDirName.isNotEmpty ? 'content/$contentDirName' : 'content';
@@ -118,7 +110,6 @@ class _InstallDialogState extends State<InstallDialog> {
 
             fullTargetPath = fullTargetPath.replaceAll('/', Platform.pathSeparator).replaceAll('\\', Platform.pathSeparator);
 
-            // Qovluğu yaradıb faylı bura kopyalayırıq
             await Directory(File(fullTargetPath).parent.path).create(recursive: true);
 
             ByteData data = await rootBundle.load(op.sourceAssetPath);
@@ -127,10 +118,9 @@ class _InstallDialogState extends State<InstallDialog> {
           }
         }
 
-        // --- SƏNƏDLƏRDƏKİ mods.settings FAYLININ ETİBARLI YENİLƏNMƏSİ ---
+        // SETTINGS YAZMA MƏNTİQİ
         await _updateModsSettings(widget.selectedMods, widget.paths.documentsPath);
 
-        // --- VİZUAL PROQRES ANİMASİYASI (Hiss etdirərək) ---
         for (int p = 1; p <= 100; p++) {
           await Future.delayed(const Duration(milliseconds: 15));
           if (mounted) {
@@ -142,14 +132,12 @@ class _InstallDialogState extends State<InstallDialog> {
         await Future.delayed(const Duration(milliseconds: 300));
       }
 
-      // Quraşdırma tam uğurla bitdi
       if (mounted) {
         setState(() {
           _isFinished = true;
         });
       }
     } catch (e) {
-      // Əgər kopyalamada hər hansı bir crash ehtimalı olarsa, onu burada tuturuq
       if (mounted) {
         setState(() {
           _hasError = true;
@@ -159,7 +147,6 @@ class _InstallDialogState extends State<InstallDialog> {
     }
   }
 
-  // --- mods.settings PARSER VƏ REBUILDER MƏNTİQİ ---
   Future<void> _updateModsSettings(List<ModConfig> selectedMods, String docsPath) async {
     final settingsFile = File('$docsPath/mods.settings'.replaceAll('/', Platform.pathSeparator));
     String content = '';
@@ -170,7 +157,6 @@ class _InstallDialogState extends State<InstallDialog> {
       await settingsFile.create(recursive: true);
     }
 
-    // Mövcud məlumatları saxlayaraq INI formatında parse edirik (mükəmməl parser)
     Map<String, Map<String, String>> sections = {};
     List<String> lines = content.split('\n');
     String currentSection = '';
@@ -189,11 +175,30 @@ class _InstallDialogState extends State<InstallDialog> {
       }
     }
 
-    // Bizim seçdiyimiz modları Enabled=1 və öz prioritetləri ilə siyahıya əlavə/yenilə edirik
     for (var mod in selectedMods) {
+      // YENİ ƏLAVƏ: Əgər modun prioriteti 0-dan böyükdürsə (yəni eyni anda sadəcə 1 dənəsi aktiv ola bilər),
+      // köhnə mods.settings faylındakı eyni prioritetə malik olan bütün modları tapıb söndürürük (Enabled=0).
+      if (mod.priority > 0) {
+        sections.forEach((sectionName, sectionData) {
+          if (sectionData['Priority'] == '${mod.priority}') {
+            sectionData['Enabled'] = '0'; // Konflikt yaradan köhnə modu söndür
+          }
+        });
+      }
+
       for (var op in mod.operations) {
-        if (op.targetGamePath.startsWith('mods/')) {
-          String modFolderName = op.targetGamePath.replaceFirst('mods/', '');
+        // Zip faylının adından qovluq adını çıxarırıq (məs: modURW_DinLite.zip -> modURW_DinLite)
+        String modFolderName = "";
+
+        if (op.sourceAssetPath.endsWith('.zip')) {
+          // Məsələn: assets/mod/mod2/modURW_DinLite.zip -> modURW_DinLite
+          modFolderName = op.sourceAssetPath.split('/').last.replaceAll('.zip', '');
+        } else if (op.targetGamePath.startsWith('mods/')) {
+          modFolderName = op.targetGamePath.replaceFirst('mods/', '');
+        }
+
+        if (modFolderName.isNotEmpty) {
+          // İndi isə yeni seçilən modu tam aktiv (Enabled=1) edirik
           sections[modFolderName] = {
             'Enabled': '1',
             'Priority': '${mod.priority}',
@@ -202,14 +207,13 @@ class _InstallDialogState extends State<InstallDialog> {
       }
     }
 
-    // INI faylını sıfırdan səliqəli şəkildə yenidən qurub yazırıq
     StringBuffer sb = StringBuffer();
     sections.forEach((section, keys) {
       sb.writeln('[$section]');
       keys.forEach((key, val) {
         sb.writeln('$key=$val');
       });
-      sb.writeln(); // Bölmələr arası boş sətir
+      sb.writeln();
     });
 
     await settingsFile.writeAsString(sb.toString(), flush: true);
@@ -254,7 +258,6 @@ class _InstallDialogState extends State<InstallDialog> {
     );
   }
 
-  // --- XƏTA (PERMİSSİON/CRASH) EKRANI ---
   Widget _buildErrorUi() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -304,7 +307,6 @@ class _InstallDialogState extends State<InstallDialog> {
     );
   }
 
-  // --- NORMAL QURAŞDIRMA EKRANI ---
   Widget _buildInstallUi(ModConfig currentMod, int percentage) {
     return Column(
       mainAxisSize: MainAxisSize.min,
