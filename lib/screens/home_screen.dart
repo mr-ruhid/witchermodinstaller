@@ -1,6 +1,7 @@
 // Dizayn kökündən dəyişdirildi: Müasir və minimalist AAA Oyun Başladıcısı (Launcher) stili.
 // Qabarıq düymələr ləğv edildi, incə və zərif menyu dizaynına keçildi. -- MR-Ruhid
 import 'package:flutter/material.dart';
+import 'dart:async'; // YENİ ƏLAVƏ: Timer funksiyası üçün mütləq lazımdır
 import 'dart:math';
 import 'dart:ui'; // Şüşə effekti (BackdropFilter) üçün
 import 'dart:io'; // Fayl əməliyyatları (Cache və Process) üçün
@@ -20,7 +21,9 @@ import '../mods/mod5/mod.dart';
 // Digər ekranlar
 import 'locator_screen.dart';
 import 'install_dialog.dart';
-import 'mod_manager_screen.dart'; // YENİ: Mod İdarəedicisi ekranını daxil edirik
+import 'mod_manager_screen.dart'; // Əvvəl əlavə etdiyimiz Mod İdarəedicisi
+import 'donate_dialog.dart';      // YENİ ƏLAVƏ: Dəstək pəncərəsi
+import 'update_dialog.dart';      // YENİ ƏLAVƏ: Güncəlləmə pəncərəsi
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -46,7 +49,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   final Random _random = Random();
 
   bool _isLaunchingGame = false;
-  bool _isGuidesExpanded = false; // YENİ: Rəhbərlər menyusunun açılıb-bağlanmasını idarə edir
+  bool _isGuidesExpanded = false; // Rəhbərlər menyusu üçün
+
+  // YENİ ƏLAVƏ: Proqramın hazırkı versiyası və Dəstək taymeri
+  final String _currentAppVersion = "1.0.0";
+  Timer? _donateTimer;
 
   @override
   void initState() {
@@ -71,6 +78,67 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
     _fireController.addListener(_updateFireParticles);
     _fireController.repeat();
+
+    // YENİ ƏLAVƏ: Proqram açılanda Update və Donate yoxlamasını işə salır
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkUpdateAndDonate();
+    });
+  }
+
+  Future<void> _checkUpdateAndDonate() async {
+    bool hasUpdate = false;
+
+    // 1. GÜNCƏLLƏMƏ (UPDATE) YOXLANIŞI
+    try {
+      final request = await HttpClient().getUrl(Uri.parse('https://ruhidjavadov.site/app/tw3/version.json'));
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final jsonString = await response.transform(utf8.decoder).join();
+        final data = jsonDecode(jsonString);
+
+        final String latestVersion = data['latest_version'];
+        final String downloadUrl = data['download_url'];
+        final String releaseNotes = data['release_notes'];
+
+        // Versiya müqayisəsi (Əgər saytdakı böyükdürsə)
+        if (_isVersionGreater(latestVersion, _currentAppVersion)) {
+          hasUpdate = true;
+          // Ekrana Update pəncərəsini çıxarır və istifadəçinin onu bağlamasını gözləyir
+          await UpdateDialog.show(context, latestVersion, releaseNotes, downloadUrl);
+        }
+      }
+    } catch (e) {
+      debugPrint('Güncəlləmə yoxlanarkən xəta: $e');
+      // Əgər internet yoxdursa proqram çökmür, səssizcə davam edir
+    }
+
+    // 2. DƏSTƏK (DONATE) PƏNCƏRƏSİNİN İLK DƏFƏ AÇILMASI
+    // (Güncəlləmə yoxlanışından/pəncərəsindən yarım saniyə sonra açılır)
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (mounted) {
+      DonateDialog.show(context);
+    }
+
+    // 3. DƏSTƏK PƏNCƏRƏSİNİN TƏKRARLANMASI (HƏR 15 DƏQİQƏDƏN BİR)
+    _donateTimer = Timer.periodic(const Duration(minutes: 15), (timer) {
+      if (mounted) {
+        DonateDialog.show(context);
+      }
+    });
+  }
+
+  bool _isVersionGreater(String latest, String current) {
+    List<int> latestParts = latest.split('.').map(int.parse).toList();
+    List<int> currentParts = current.split('.').map(int.parse).toList();
+
+    for (int i = 0; i < 3; i++) {
+      int l = i < latestParts.length ? latestParts[i] : 0;
+      int c = i < currentParts.length ? currentParts[i] : 0;
+      if (l > c) return true; // Saytdakı versiya böyükdür (Update lazımdır)
+      if (l < c) return false;
+    }
+    return false; // Eynidir
   }
 
   void _updateFireParticles() {
@@ -88,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void dispose() {
     _fireController.dispose();
+    _donateTimer?.cancel(); // YENİ ƏLAVƏ: Taymeri bağlamaq
     super.dispose();
   }
 
