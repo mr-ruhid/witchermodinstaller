@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 import 'screens/loading_screen.dart';
 import 'screens/home_screen.dart';
-import 'screens/locator_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,16 +9,16 @@ void main() async {
 
   WindowOptions windowOptions = const WindowOptions(
     size: Size(1280, 720),
-    center: true, // Proqramı həmişə ekranın mərkəzinə alır
+    center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden, // Çərçivəni gizlədir
+    titleBarStyle: TitleBarStyle.hidden, // Çərçivəsiz (Borderless) stil
   );
 
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
-    await windowManager.maximize(); // HƏMİŞƏ TAM EKRAN AÇILIR
+    await windowManager.maximize(); // TAM EKRAN AÇILMASI GERİ QAYTARILDI
   });
 
   runApp(const ModInstallerApp());
@@ -42,7 +41,6 @@ class ModInstallerApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoadingScreen(),
         '/home': (context) => const HomeScreen(),
-        '/locator': (context) => const LocatorScreen(),
       },
     );
   }
