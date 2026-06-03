@@ -120,7 +120,7 @@ class _ModManagerScreenState extends State<ModManagerScreen> {
     await settingsFile.writeAsString(sb.toString(), flush: true);
   }
 
-  // --- 3. KƏNAR ZİP FAYLINDAN YENİ MOD QURAŞDIRMAQ (AĞILLI ÇIXARIŞ) ---
+  // --- 3. KƏNAR ARXİVDƏN (ZIP, RAR, 7Z) YENİ MOD QURAŞDIRMAQ ---
   Future<void> _installNewMod() async {
     if (_gamePath == null || _docsPath == null) {
       _showSnackBar('Əvvəlcə Ana Səhifədən yolları təsdiqləyin (Oyun və Sənədlər qovluğunu tapın).', Colors.redAccent);
@@ -128,49 +128,94 @@ class _ModManagerScreenState extends State<ModManagerScreen> {
     }
 
     fp.FilePickerResult? result = await fp.FilePicker.platform.pickFiles(
-      dialogTitle: 'Quraşdırmaq istədiyiniz Modu (ZIP faylını) seçin',
+      dialogTitle: 'Quraşdırmaq istədiyiniz Modu seçin (.zip, .rar, .7z)',
       type: fp.FileType.custom,
-      allowedExtensions: ['zip'],
+      allowedExtensions: ['zip', 'rar', '7z'], // ARTIQ RAR VƏ 7Z DƏ QƏBUL EDİLİR
     );
 
     if (result != null && result.files.single.path != null) {
+      String filePath = result.files.single.path!;
+      String extension = filePath.split('.').last.toLowerCase();
+
       setState(() {
         _isInstalling = true;
-        _installStatus = 'ZIP faylı analiz edilir...';
+        _installStatus = 'Arxiv faylı analiz edilir...';
       });
 
       try {
-        File zipFile = File(result.files.single.path!);
-        List<int> bytes = await zipFile.readAsBytes();
-        Archive archive = ZipDecoder().decodeBytes(bytes);
-
-        // ZIP-in içində adı "mod" ilə başlayan əsas qovluğu tapmaq üçün regex
-        // Məsələn: "Nosferatu Font/modNosferatu/content/..." -> "modNosferatu" tapılacaq
-        RegExp modFolderRegex = RegExp(r'(?:^|/)(mod[^/]+)/(.*)', caseSensitive: false);
-
         bool modFound = false;
         String foundModName = '';
 
-        for (ArchiveFile file in archive) {
-          if (file.isFile && !file.name.endsWith('/')) {
-            Match? match = modFolderRegex.firstMatch(file.name);
-            if (match != null) {
-              modFound = true;
-              foundModName = match.group(1)!; // Məsələn: modNosferatu
-              String relativePathInsideMod = match.group(2)!; // Məsələn: content/blob.bundle
+        if (extension == 'zip') {
+          // --- ZIP FAYLLARI ÜÇÜN DAXİLİ SÜRƏTLİ DART MƏNTİQİ ---
+          File zipFile = File(filePath);
+          List<int> bytes = await zipFile.readAsBytes();
+          Archive archive = ZipDecoder().decodeBytes(bytes);
 
-              // Oyunun mods qovluğunda yeri hazırlayırıq
-              String fullTargetPath = '$_gamePath/mods/$foundModName/$relativePathInsideMod';
-              fullTargetPath = fullTargetPath.replaceAll('/', Platform.pathSeparator).replaceAll('\\', Platform.pathSeparator);
+          RegExp modFolderRegex = RegExp(r'(?:^|/)(mod[^/]+)/(.*)', caseSensitive: false);
 
-              await Directory(File(fullTargetPath).parent.path).create(recursive: true);
-              await File(fullTargetPath).writeAsBytes(file.content as List<int>, flush: true);
+          for (ArchiveFile file in archive) {
+            if (file.isFile && !file.name.endsWith('/')) {
+              Match? match = modFolderRegex.firstMatch(file.name);
+              if (match != null) {
+                modFound = true;
+                foundModName = match.group(1)!;
+                String relativePathInsideMod = match.group(2)!;
+
+                String fullTargetPath = '$_gamePath/mods/$foundModName/$relativePathInsideMod';
+                fullTargetPath = fullTargetPath.replaceAll('/', Platform.pathSeparator).replaceAll('\\', Platform.pathSeparator);
+
+                await Directory(File(fullTargetPath).parent.path).create(recursive: true);
+                await File(fullTargetPath).writeAsBytes(file.content as List<int>, flush: true);
+              }
             }
           }
+        } else if (extension == 'rar' || extension == '7z') {
+          // --- RAR VƏ 7Z FAYLLARI ÜÇÜN 7Z.EXE MƏNTİQİ ---
+          String baseDir = File(Platform.resolvedExecutable).parent.path;
+
+          // Yeni təyin etdiyin yol: assets/7z/7z.exe
+          String exePath = '$baseDir\\data\\flutter_assets\\assets\\7z\\7z.exe';
+          if (!File(exePath).existsSync()) {
+            exePath = '${Directory.current.path}\\assets\\7z\\7z.exe';
+          }
+
+          if (!File(exePath).existsSync()) {
+            throw Exception('XƏTA: .rar və .7z arxivlərini açmaq üçün "7z.exe" tapılmadı! Faylların layihənizin "assets/7z/" qovluğunda olduğuna əmin olun.');
+          }
+
+          // Arxa planda müvəqqəti qovluq (Temp) yaradırıq
+          String tempPath = '${Directory.systemTemp.path}\\WitcherModTemp_${DateTime.now().millisecondsSinceEpoch}';
+          await Directory(tempPath).create(recursive: true);
+
+          // 7z.exe ilə arxivi gizlicə Temp qovluğuna çıxarırıq (-y əmri hər şeyə avtomatik "Yes" deyir)
+          var process = await Process.run(exePath, ['x', filePath, '-o$tempPath', '-y']);
+          if (process.exitCode != 0) {
+            throw Exception('Arxivi çıxarmaq mümkün olmadı. Fayl zədəli ola bilər və ya 7z.dll faylı əskikdir.');
+          }
+
+          // Çıxarılan qovluqlarda "mod..." adında qovluq axtarırıq
+          await for (var entity in Directory(tempPath).list(recursive: true)) {
+            if (entity is Directory) {
+              String dirName = entity.path.split(Platform.pathSeparator).last;
+              if (dirName.toLowerCase().startsWith('mod') && dirName.length > 3) {
+                modFound = true;
+                foundModName = dirName;
+
+                // Tapılan modu oyunun mods qovluğuna kopyalayırıq
+                String targetDir = '$_gamePath/mods/$foundModName'.replaceAll('/', Platform.pathSeparator);
+                await _copyDirectory(entity, Directory(targetDir));
+                break; // İlk mod qovluğunu tapanda dayanır
+              }
+            }
+          }
+
+          // İşimiz bitdikdən sonra kompüterdə yer tutmasın deyə müvəqqəti qovluğu silirik
+          try { await Directory(tempPath).delete(recursive: true); } catch(_) {}
         }
 
+        // Qovluq kopyalandısa Settings-ə yazırıq
         if (modFound) {
-          // mods.settings-ə əlavə edirik (və ya varsa aktiv edirik)
           bool exists = false;
           for (var mod in _installedMods) {
             if (mod.name.toLowerCase() == foundModName.toLowerCase()) {
@@ -187,7 +232,7 @@ class _ModManagerScreenState extends State<ModManagerScreen> {
           await _saveModsSettings();
           _showSnackBar('$foundModName uğurla quraşdırıldı!', Colors.greenAccent);
         } else {
-          _showSnackBar('XƏTA: Bu ZIP faylının içində "mod..." adlı qovluq tapılmadı. Bu düzgün Witcher 3 modu olmaya bilər.', Colors.redAccent);
+          _showSnackBar('XƏTA: Bu arxivin içində "mod..." adlı qovluq tapılmadı. Bu düzgün mod olmaya bilər.', Colors.redAccent);
         }
 
       } catch (e) {
@@ -196,6 +241,20 @@ class _ModManagerScreenState extends State<ModManagerScreen> {
         setState(() {
           _isInstalling = false;
         });
+      }
+    }
+  }
+
+  // Dart dilində standart qovluq kopyalama funksiyası olmadığı üçün özümüz yaradırıq
+  Future<void> _copyDirectory(Directory source, Directory destination) async {
+    await destination.create(recursive: true);
+    await for (var entity in source.list(recursive: false)) {
+      if (entity is Directory) {
+        var newDirectory = Directory('${destination.absolute.path}\\${entity.path.split(Platform.pathSeparator).last}');
+        await newDirectory.create();
+        await _copyDirectory(entity.absolute, newDirectory);
+      } else if (entity is File) {
+        await entity.copy('${destination.absolute.path}\\${entity.path.split(Platform.pathSeparator).last}');
       }
     }
   }

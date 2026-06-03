@@ -76,6 +76,8 @@ flutter:
      - assets/mod/mod5/mod/modRjGeyim.zip
      - assets/tools/
      - assets/tools/w3string.exe
+     - assets/7z/7z.exe
+     - assets/7z/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

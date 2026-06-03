@@ -20,6 +20,7 @@ import '../mods/mod5/mod.dart';
 // Digər ekranlar
 import 'locator_screen.dart';
 import 'install_dialog.dart';
+import 'mod_manager_screen.dart'; // YENİ: Mod İdarəedicisi ekranını daxil edirik
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -45,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   final Random _random = Random();
 
   bool _isLaunchingGame = false;
+  bool _isGuidesExpanded = false; // YENİ: Rəhbərlər menyusunun açılıb-bağlanmasını idarə edir
 
   @override
   void initState() {
@@ -462,6 +464,38 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 color: Colors.blueAccent,
                 onTap: _launchTranslator,
               ),
+              const SizedBox(height: 12),
+
+              // MOD İDARƏEDİCİSİ (YENİ ƏLAVƏ)
+              _buildMenuButton(
+                title: 'MOD İDARƏEDİCİSİ',
+                icon: Icons.dashboard_customize_rounded,
+                color: Colors.purpleAccent,
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ModManagerScreen()));
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // RƏHBƏRLƏR MENYUSU (YENİ ƏLAVƏ)
+              _buildMenuButton(
+                title: 'RƏHBƏRLƏR',
+                icon: _isGuidesExpanded ? Icons.keyboard_arrow_up_rounded : Icons.menu_book_rounded,
+                color: Colors.tealAccent,
+                onTap: () {
+                  setState(() {
+                    _isGuidesExpanded = !_isGuidesExpanded;
+                  });
+                },
+              ),
+
+              // RƏHBƏRLƏR ALT KATEQORİYALARI
+              if (_isGuidesExpanded) ...[
+                const SizedBox(height: 8),
+                _buildSubMenuButton('Dəstək Bloqu', Icons.article_rounded, Colors.orangeAccent, 'https://ruhidjavadoff.blogspot.com/2026/06/the-witcher-mod-yuklyici-ucun-rhbrlik.html'),
+                _buildSubMenuButton('Video Dəstək', Icons.smart_display_rounded, Colors.redAccent, 'https://www.youtube.com/playlist?list=PLHim7M7nBytPgfSt-0YOnX-rO9jcQngz0'),
+                _buildSubMenuButton('Steam Dəstək', Icons.sports_esports_rounded, Colors.lightBlueAccent, 'https://steamcommunity.com/groups/azegc'),
+              ],
 
               const Spacer(),
 
@@ -526,6 +560,39 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // --- ALT KATEQORİYA (RƏHBƏRLƏR ÜÇÜN) DÜYMƏ DİZAYNI ---
+  Widget _buildSubMenuButton(String title, IconData icon, Color color, String url) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, bottom: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _openUrl(url),
+          borderRadius: BorderRadius.circular(6),
+          hoverColor: color.withOpacity(0.1),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.01),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: Colors.white.withOpacity(0.03)),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: color.withOpacity(0.8), size: 18),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
           ),
         ),
       ),
