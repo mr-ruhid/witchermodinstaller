@@ -176,6 +176,53 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
   }
 
+  // --- MASAÜSTÜNƏ AVTOMATİK QISAYOL YARATMA MƏNTİQİ ---
+  Future<void> _createDesktopShortcut() async {
+    try {
+      String exePath = Platform.resolvedExecutable;
+
+      // İstifadəçinin Desktop (Masaüstü) yolunu tapırıq
+      String userProfile = Platform.environment['USERPROFILE'] ?? '';
+      String desktopPath = "$userProfile\\Desktop\\Witcher 3 Milli.lnk";
+
+      // Əgər qısayol onsuz da varsa, bir daha yaratmamaq üçün dayandırırıq
+      if (await File(desktopPath).exists()) {
+        return;
+      }
+
+      // PowerShell skripti (Qısayolu Masaüstünə yazır və içinə şifrəni qoyur)
+      String psCommand = '''
+        \$WshShell = New-Object -comObject WScript.Shell
+        \$Shortcut = \$WshShell.CreateShortcut("$desktopPath")
+        \$Shortcut.TargetPath = "$exePath"
+        \$Shortcut.Arguments = "--launch-game"
+        \$Shortcut.IconLocation = "$exePath, 0"
+        \$Shortcut.Save()
+      ''';
+
+      // Skripti arxa planda səssizcə işə salırıq
+      await Process.run('powershell', ['-NoProfile', '-Command', psCommand]);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.add_to_home_screen_rounded, color: Colors.white),
+                SizedBox(width: 10),
+                Text('Masaüstünə təmiz başlatma qısayolu əlavə edildi!'),
+              ],
+            ),
+            backgroundColor: Color(0xFF1B2A18),
+            duration: Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint("Qısayol yaradılarkən xəta: $e");
+    }
+  }
+
   // --- OYUNU BAŞLATMA MƏNTİQİ ---
   Future<void> _playGame() async {
     setState(() => _isLaunchingGame = true);
@@ -203,6 +250,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           if (selectedPath.toLowerCase().endsWith('witcher3.exe')) {
             gamePath = selectedPath;
             await cacheFile.writeAsString(gamePath);
+
+            // YENİ ƏLAVƏ: Oyun yolu tapılan kimi avtomatik qısayolu atır
+            await _createDesktopShortcut();
           } else {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -246,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
   }
 
-  // --- TƏRCÜMƏ PROQRAMINI BAŞLATMA MƏNTİQİ (YENİ ƏLAVƏ) ---
+  // --- TƏRCÜMƏ PROQRAMINI BAŞLATMA MƏNTİQİ ---
   Future<void> _launchTranslator() async {
     try {
       // Flutter proqramının işlədiyi əsas qovluğu tapırıq
@@ -345,6 +395,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       // istifadəçi bir də əziyyət çəkib .exe faylını axtarmasın.
       final playCacheFile = File('game_path_cache.txt');
       await playCacheFile.writeAsString('${validPaths.mainGamePath}\\bin\\x64\\witcher3.exe');
+
+      // YENİ ƏLAVƏ: Yollar təsdiqlənən kimi avtomatik qısayolu atır
+      await _createDesktopShortcut();
+
     } catch (e) {
       debugPrint('Keş yazılarkən xəta: $e');
     }
