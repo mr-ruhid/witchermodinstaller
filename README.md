@@ -60,4 +60,4 @@ This project is completely **free and open-source**. If you appreciate the hundr
 <p align="center">
   <i>The Witcher® 3: Wild Hunt © CD PROJEKT RED. <br>This is an unofficial community/fan-made tool.</i>
 </p>
-```eof
+
