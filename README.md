@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://ruhidjavadov.site/app/tw3/photo/logo.webp" alt="Witcher 3 Mod Manager Logo" width="300"/>
+  <img src="https://ruhidjavadov.site/app/tw3/photo/logo.webp](https://github.com/mr-ruhid/rare-logos-vault/blob/main/logo/other_apps/AZE-Witcher-mod/logo.webp" alt="Witcher 3 Mod Manager Logo" width="300"/>
   <h1>The Witcher 3 · Mod Manager & Localizer ⚔️</h1>
   <p><b>An advanced, AAA-style desktop application for managing mods and localizing The Witcher 3: Wild Hunt.</b></p>
   
